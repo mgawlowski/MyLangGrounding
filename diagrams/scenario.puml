@@ -1,0 +1,15 @@
+@startuml
+actor Uzytkownik
+Uzytkownik -> Agent: Deklaracja związanych obiektów
+Agent -> Srodowisko:Sprawdzenie istnienia nowych obserwacji
+Agent <- Srodowisko: Rejestracja nowej obserwacji
+Agent -> Agent: Zapis obserwacji
+Agent -> Srodowisko:Sprawdzenie istnienia nowych obserwacji
+Agent <- Srodowisko: Rejestracja nowej obserwacji
+Agent -> Agent: Zapis obserwacji
+Uzytkownik -> Agent: Zadanie pytania
+Agent -> Agent: przetworzenie pytania
+Agent -> Agent: wygenerowanie ugruntowanych formuł
+Agent -> Agent: wygenerowanie odpowiedzi w języku naturalnym
+Agent -> Uzytkownik: Zwrócenie odpowiedzi
+@enduml

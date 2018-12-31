@@ -1,0 +1,34 @@
+DEF;;;;;;;;;;;;;;
+#;;simple modalities;;;;;no context;;;;;;;
+#;;;;;;;;;;;;;;
+#;used conj thresholds;;0.1;0.6;0.65;0.9;1.0;;;;;;;
+Hyzio;0124;Red;White;Blinking;;;;;;;;;;
+Zyzio;02442;Blue;Soft;Blinking;;;;;;;;;;
+Rysio;02452;Blue;Soft;Blinking;;;;;;;;;;
+SCENARIO;;;;;;;;;;;;;;
+Hyzio;Rysio;Zyzio;;;;;;;;;;;;
+#;;Hyzio;;;Rysio;;;Zyzio;;;;;;
+timestamp;related_object;Red;White;Blinking;Blue;Soft;Blinking;Blue;Soft;Blinking;;;;
+0;Hyzio;1;-1;-1;;;;;;;is hyzio blinking;No, but I know that he is not;;
+1;Hyzio;1;-1;-1;;;;;;;;;;
+2;Hyzio;1;-1;1;;;;;;;;;
+3;Hyzio;1;-1;0;;;;;;;is hyzio red;i know;
+4;Hyzio;0;-1;-1;;;;;;;is hyzio red;know p;;
+5;Hyzio;0;-1;0;;;;;;;is hyzio blinking;It is possible it is blinking, but I believe it is not;is hyzio white;i know it is not
+6;Hyzio;0;1;1;;;;;;;;;;
+7;Hyzio;-1;1;0;;;;;;;is hyzio red;Know not;is hyzio white;know is
+8;Hyzio;0;0;1;;;;;;;
+9;Hyzio;1;0;1;;;;;;;is hyzio white;bel not pos is;;
+10;Hyzio;1;0;1;;;;;;;;;;
+11;Hyzio;-1;-1;0;;;;;;;
+12;Rysio;;;;1;1;1;;;;;;;
+13;Rysio;;;;-1;1;1;;;;
+14;Rysio;;;;1;-1;-1;;;;;;;
+15;Rysio;;;;-1;-1;-1;;;;;;;
+16;Rysio;;;;0;1;1;;;;;;;is hyzio red; It is possible that hyzio is Red, but it is also possible that it is not
+17;Rysio;;;;0;1;1;;;;;;;
+18;Rysio;;;;1;0;1;;;;
+19;Rysio;;;;;;;1;1;-1;;;;
+20;Rysio;;;;;;;1;1;-1;
+21;Rysio;;;;;;;1;-1;-1;;;;
+22;Rysio;;;;;;;1;0;1;is hyzio white ; pos is White, pos not

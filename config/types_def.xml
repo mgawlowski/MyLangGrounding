@@ -1,0 +1,132 @@
+<!-- This is the example file containing types definitions for observed observations.
+	All non-primitive Java types equivalent to primitive ones (and String) are permitted.
+	Names of traits will be stored as Strings. -->
+<types>
+    <collection class="linked-list">
+        <type>
+            <typeId>01</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>Red</name>
+                </trait>
+                <trait>
+                    <name>White</name>
+                </trait>
+                <trait>
+                    <name>Blinking</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>02</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>Blue</name>
+                </trait>
+                <trait>
+                    <name>Soft</name>
+                </trait>
+                <trait>
+                    <name>Blinking</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>03</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>Orange</name>
+                </trait>
+                <trait>
+                    <name>Round</name>
+                </trait>
+                <trait>
+                    <name>Sharp</name>
+                </trait>
+                <trait>
+                    <name>Solid</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>04</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>Blue</name>
+                </trait>
+                <trait>
+                    <name>Soft</name>
+                </trait>
+                <trait>
+                    <name>Blinking</name>
+                </trait>
+                <trait>
+                    <name>Green</name>
+                </trait>
+                <trait>
+                    <name>Square</name>
+                </trait>
+                <trait>
+                    <name>Solid</name>
+                </trait>
+                <trait>
+                    <name>Striped</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>11</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>Happy</name>
+                </trait>
+                <trait>
+                    <name>Eating</name>
+                </trait>
+                <trait>
+                    <name>White</name>
+                </trait>
+                <trait>
+                    <name>Dirty</name>
+                </trait>
+                <trait>
+                    <name>Playing</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>12</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>yellow</name>
+                </trait>
+                <trait>
+                    <name>square</name>
+                </trait>
+                <trait>
+                    <name>round</name>
+                </trait>
+                <trait>
+                    <name>Striped</name>
+                </trait>
+            </traits>
+        </type>
+        <type>
+            <typeId>13</typeId>
+            <traits class="linked-list">
+                <trait>
+                    <name>polite</name>
+                </trait>
+                <trait>
+                    <name>friendly</name>
+                </trait>
+                <trait>
+                    <name>tired</name>
+                </trait>
+                <trait>
+                    <name>hungry</name>
+                </trait>
+            </traits>
+        </type>
+    </collection>
+</types>

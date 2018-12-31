@@ -1,0 +1,12 @@
+#komentarz;;;;;;;;;;;;
+DEF;;;;;;;;;;;;
+Bobby;0412;Blue;Soft;Blinking;Green;Square;Solid;Striped;;;;
+SCENARIO;;;;;;;;;;;;
+Bobby;;;;;;;;;;;;
+timestamp;related_object;Blue;Soft;Blinking;Green;Square;Solid;Striped;;;;
+9;Bobby;1;1;1;1;1;1;-1;;;;
+10;Bobby;1;1;1;1;1;1;-1;;;;
+11;Bobby;1;1;1;1;1;1;-1;;;;
+12;Bobby;-1;-1;-1;-1;-1;-1;1;;;;
+13;Bobby;0;-1;-1;-1;-1;-1;0;is Bobby blue and soft;Yes, I belive;Is Bobby solid and not striped;Yes, I belive
+#;;;;;;@up;dla latestFiltering:;;;No, I know it is not;;No, I know it is not

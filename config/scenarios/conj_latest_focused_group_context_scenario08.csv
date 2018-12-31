@@ -1,0 +1,34 @@
+#scenario description;formulas type:;;conjunctions;;context:;latest group focused context;;;;;;;;
+#;;;;;threshold:;0;;;;;;;;
+#;;;;;desirable states of definied traits:;;;is blue, is blinking;;;;;;
+DEF;;;;;;;;;;;;;;
+Dyzio;04512;Blue;Soft;Blinking;Green;Square;Solid;Striped;;;;;;
+SCENARIO;;;;;;;;;;;;;;
+Dyzio;;;;;;;;;;;;;;
+timestamp;related_object;Blue;Soft;Blinking;Green;Square;Solid;Striped;;;;;;
+6;Dyzio;1;1;1;1;1;0;1;;;;;;
+7;Dyzio;1;1;1;1;1;0;1;;;;;;
+8;Dyzio;1;1;1;1;1;1;-1;;;;;;
+9;Dyzio;-1;-1;-1;0;1;1;-1;;;;;;
+10;Dyzio;1;1;1;1;1;0;1;;;;;;
+11;Dyzio;-1;-1;-1;0;1;1;-1;;;;;;
+12;Dyzio;1;1;1;1;1;0;1;;;;;;
+13;Dyzio;-1;1;1;0;1;0;1;;;;;;
+14;Dyzio;-1;1;1;0;1;1;-1;;;;;;
+15;Dyzio;-1;-1;-1;0;1;1;1;;;;;;
+16;Dyzio;-1;-1;-1;0;0;1;-1;;;;;;
+17;Dyzio;0;0;0;0;0;0;1;is dyzio green and square;Yes, It is;is dyzio soft and blinking;Yes, I know that dyzio is Soft and Blinking;is dyzio striped and square;Yes, I believe that dyzio is Striped and Square, but it is possible that it is not Striped and Square
+#;;;;;;;;przeflitrowane zbiory gruntujace zawieraja 6-8, 10, 12;;;;w kazdej z pieciu obserwacji jest sof and blinking;;4/5 dla striped and square => bel
+18;Dyzio;-1;-1;0;1;-1;1;1;;;;;;
+19;Dyzio;-1;1;-1;1;-1;1;1;;;;;;
+20;Dyzio;0;0;0;0;0;0;0;is dyzio green and square;Yes, I Know;;;;
+#;;;;;;;;;;ostatnie dwie obserwacje 18 i 19 gdzie is not square nie brane pod uwage poniewaz odleglosc od kontekstu jest zbyt duza;;;;
+18;Dyzio;1;1;1;1;-1;1;1;;;;;;
+19;Dyzio;1;1;1;1;-1;1;1;;;;;;
+20;Dyzio;0;0;0;0;0;0;0;is dyzio green and square;I belive;;;;
+#;;;;;;;;;;uwzglednienie dwoch ostatnich obserwacji (zgodne z kontekstem) gdzie not square;;;;
+21;Dyzio;1;1;1;1;-1;1;1;;;;;;
+22;Dyzio;0;0;0;0;0;0;0;is dyzio not blue and solid;Yes, it is possible that dyzio is not Blue and Solid, but it is possible that it is Blue and Solid;is dyzio striped and solid;I don't know about those states of dyzio, but it is possible that it is not Striped and Solid;;
+23;Dyzio;-1;1;1;-1;1;1;1;;;;;;
+24;Dyzio;0;0;0;0;0;0;0;is dyzio not blue and solid;Yes, it is possible that dyzio is not Blue and Solid, but it is possible that it is Blue and Solid;;;;
+#;;;;;;;;;;;;;;
