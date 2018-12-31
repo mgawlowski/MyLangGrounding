@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * and long-term memory(obszar przedswiadomy/PT) and provides complete set of operations on stored base profiles.
  * Contains knowledge collected till moment in time described by timestamp. Timestamp is updated according to last recent
  * timestamp specified among entire base profiles.
- * All operations should be //todo
+ * All operations should be //to.do
  *
  * @author Grzegorz Kostkowski
  */

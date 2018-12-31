@@ -440,7 +440,7 @@ NR  RED WHI BLI
     void testCountSetDiameter() {
         buildRelatedScenario(3)
 
-        //dependent test  todo should be moved to FormulaTest
+        //dependent test  to.do should be moved to FormulaTest
         def dependent = cformula5.getDependentFormulas()
         def expected1 = new ComplexFormula(cformula5.getModel(), cformula5.getTraits(), [State.IS_NOT, State.IS_NOT]as List<State>, LogicOperator.AND)
         def expected2 = new ComplexFormula(cformula5.getModel(), cformula5.getTraits(), [State.IS_NOT, State.IS]as List<State>, LogicOperator.AND)

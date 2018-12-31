@@ -107,7 +107,7 @@ class FormulaTest extends GroovyTestCase {
 
         assertEquals(false, sformula2.isFormulaFulfilled(bp1))
         assertEquals(true, sformula2.isFormulaFulfilled(bp8))
-        //assertEquals(true, sformula2.isFormulaFulfilled(bp9))  //todo true czy false
+        //assertEquals(true, sformula2.isFormulaFulfilled(bp9))  //to.do true czy false
 
         //CONJUNCTIONS
         assertEquals(false, cformulaConj1.isFormulaFulfilled(bp1))

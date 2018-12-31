@@ -3,27 +3,13 @@ package com.pwr.zpi;
 import com.pwr.zpi.conversation.ConversationSimulator;
 import com.pwr.zpi.core.Agent;
 import com.pwr.zpi.core.memory.episodic.Observation;
-import com.pwr.zpi.core.memory.holons.context.measures.NormalisedSoftDistance;
-import com.pwr.zpi.core.memory.holons.context.selectors.LatestFocusedGroupSelector;
-import com.pwr.zpi.core.memory.holons.context.selectors.LatestGroupSelector;
-import com.pwr.zpi.core.memory.holons.context.selectors.LatestSelector;
 import com.pwr.zpi.core.memory.semantic.IndividualModel;
 import com.pwr.zpi.core.memory.semantic.ObjectType;
-import com.pwr.zpi.exceptions.InvalidContextualisationException;
-import com.pwr.zpi.exceptions.InvalidFormulaException;
-import com.pwr.zpi.exceptions.InvalidGroupSelectorException;
-import com.pwr.zpi.exceptions.InvalidMeasureException;
-import com.pwr.zpi.core.memory.holons.context.builders.ConcreteContextBuilder;
-import com.pwr.zpi.core.memory.holons.context.contextualisation.Contextualisation;
-import com.pwr.zpi.core.memory.holons.context.contextualisation.FilteringContextualisation;
-import com.pwr.zpi.core.memory.holons.context.measures.NormalisedDistance;
-
-import com.pwr.zpi.language.*;
 import com.pwr.zpi.core.memory.semantic.identifiers.QRCode;
+import com.pwr.zpi.exceptions.InvalidFormulaException;
+import com.pwr.zpi.language.*;
 import com.pwr.zpi.simulation.Scenario;
 import com.pwr.zpi.util.Util;
-import javafx.application.Application;
-import org.codehaus.groovy.runtime.powerassert.SourceText;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -31,9 +17,6 @@ import java.util.logging.Logger;
 
 class Main {
 
-    private static final String CONTEXT_FLAG = "--context";
-    private static final int NO_CONTEXT_INDICATOR = 1;
-    private static final int CONTEXT_INDICATOR = 2;
     private static final String FINAL_PRESENTATION_SCENARIO_FILE = "final_presentation_scenario.csv";
 
     /**
@@ -41,8 +24,7 @@ class Main {
      *
      * @param args
      */
-    static public void main(String... args) throws InterruptedException, InvalidMeasureException,
-            InvalidContextualisationException, InvalidGroupSelectorException, InvalidFormulaException {
+    static public void main(String... args) {
 
         Level logsVisibilityLevel = Level.INFO;
         Util.setLogVisibilityLevel(logsVisibilityLevel);
@@ -64,12 +46,12 @@ class Main {
 
         new Scenario(agent, "_scenario.csv").execute();  //scenario01a
 //        new Scenario(agentNoCtxt, "conj_disj_scenario01c_main.csv").execute();  //scenario01c
-    //    new Scenario(agentNoCtxt, "sm_conj_disj_scenario01b_main.csv").execute();  //scenario01b //todo
+    //    new Scenario(agentNoCtxt, "sm_conj_disj_scenario01b_main.csv").execute();  //scenario01b //to.do
 //
 //        new Scenario(agentNoCtxt, "conj_no_context_scenario001.csv").execute(); //scenario001
 //        new Scenario(agentNoCtxt, "conj_no_context_scenario02a.csv").execute(); //scenario02a
 //        new Scenario(agentLtstCntxt, "conj_context_scenario02b.csv").execute();  //scenario02b
-//        new Scenario(agentNoCtxt, "sm_conj_no_context_scenario03.csv").execute(); //scenario03 //todo
+//        new Scenario(agentNoCtxt, "sm_conj_no_context_scenario03.csv").execute(); //scenario03 //to.do
 //        new Scenario(agentLtstCntxt, "conj_latest_context_scenario04.csv").execute(); //scenario04
 //        new Scenario(agentNoCtxt, "ex_disj_no_context_scenario05.csv").execute(); //scenario05
 //        new Scenario(agentNoCtxt, "disj_no_context_scenario06.csv").execute(); //scenario06
@@ -103,17 +85,7 @@ class Main {
     }
 
     private static void launchFinalPresentationMode(String[] args) {
-        try {
-            if (args != null && args.length == 1) {
-                if(args[0].equalsIgnoreCase(CONTEXT_FLAG))
-                runDemonstration(CONTEXT_INDICATOR);
-            } else {
-                runDemonstration(NO_CONTEXT_INDICATOR);
-            }
-        } catch (InvalidMeasureException | InvalidFormulaException | InvalidContextualisationException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Not able to run presentation due to an error.", e);
-            System.exit(1);
-        }
+       runDemonstration();
     }
 
     private static void runNoContext() {
@@ -124,48 +96,17 @@ class Main {
 
     }
 
-    private static void launchPresentationMode() throws InvalidMeasureException, InvalidContextualisationException, InvalidFormulaException {
-//        System.out.println("\tAvailable scenarios:\n" +
-//                "1. standard noContext\n2. focusedContext\n");
-//        System.out.println("Enter number representing prepared scenario:");
-//        System.out.print("> ");
-//        Scanner sc=new Scanner(System.in);
-//        int choice = sc.nextInt();
-//        runDemonstration(choice);
-
-        System.exit(0);
-    }
-
-    private static void runDemonstration(int choice) throws InvalidMeasureException, InvalidContextualisationException, InvalidFormulaException {
-        switch (choice) {
-            case NO_CONTEXT_INDICATOR:
-                Logger.getAnonymousLogger().log(Level.INFO, "Launching  conversation without context ...");
-                Agent agent=new Agent.AgentBuilder()
-                        .label("agentNoCtxt")
-                        .build();
-                new Scenario(agent, FINAL_PRESENTATION_SCENARIO_FILE).execute();
-                agent.startLifeCycle();
-                if(new Scanner(System.in).next() == "x") {
-                    agent.sttopLifeCycle();
-                    Logger.getAnonymousLogger().log(Level.INFO, "Closing conversation ...");
-                }
-                break;
-            case CONTEXT_INDICATOR:
-                Logger.getAnonymousLogger().log(Level.INFO, "Launching  conversation with context ...");
-                executeDedicatedConjFocusedGroupContextScenario();
-                break;
-        }
-    }
-
-    private static void executeConjLatestGroupSoftDistContextScenario() throws InvalidGroupSelectorException, InvalidMeasureException, InvalidContextualisationException {
-        Contextualisation latestGroupContextSoftDis = new FilteringContextualisation(new ConcreteContextBuilder(),
-                new LatestGroupSelector(3),
-                new NormalisedSoftDistance(0.5));
-        Agent agentLtstGrpCntxtSoftDist = new Agent.AgentBuilder()
-                .contextualisation(latestGroupContextSoftDis)
-                .label("agentLtstGrpCntxtSoftDist")
+    private static void runDemonstration() {
+        Logger.getAnonymousLogger().log(Level.INFO, "Launching  conversation...");
+        Agent agent=new Agent.AgentBuilder()
+                .label("agentNoCtxt")
                 .build();
-        new Scenario(agentLtstGrpCntxtSoftDist, "conj_latest_group_context_scenario07.csv").execute();
+        new Scenario(agent, FINAL_PRESENTATION_SCENARIO_FILE).execute();
+        agent.startLifeCycle();
+        if(new Scanner(System.in).next() == "x") {
+            agent.sttopLifeCycle();
+            Logger.getAnonymousLogger().log(Level.INFO, "Closing conversation...");
+        }
     }
 
     /**
@@ -186,32 +127,6 @@ class Main {
             System.out.println("\t\t\tScenario "+scenarioName);
             new Scenario(agentNoCtxt, scenarioName).execute();
         }
-    }
-
-    private static void executeConjFocusedGroupContextScenario() throws InvalidFormulaException, InvalidMeasureException, InvalidContextualisationException {
-        Formula relevantTraitedFormula = prepareSampleFormula();
-        Contextualisation latestFocusedGroupContextSoftDis = new FilteringContextualisation(new ConcreteContextBuilder(),
-                new LatestFocusedGroupSelector(relevantTraitedFormula),
-                new NormalisedSoftDistance(0.5));
-        Agent agentLtstFcsdGrpCntxtSoftDist = new Agent.AgentBuilder()
-                .contextualisation(latestFocusedGroupContextSoftDis)
-                .label("agentLtstFcsdGrpCntxtSoftDist")
-                .build();
-
-        new Scenario(agentLtstFcsdGrpCntxtSoftDist, "conj_latest_focused_group_context_scenario08.csv").execute();
-    }
-
-    private static void executeDedicatedConjFocusedGroupContextScenario() throws InvalidFormulaException, InvalidMeasureException, InvalidContextualisationException {
-        Formula relevantTraitedFormula = prepareDedicatedSampleFormula();
-        Contextualisation latestFocusedGroupContextSoftDis = new FilteringContextualisation(new ConcreteContextBuilder(),
-                new LatestFocusedGroupSelector(relevantTraitedFormula),
-                new NormalisedSoftDistance(0.0));
-        Agent agentLtstFcsdGrpCntxtSoftDist = new Agent.AgentBuilder()
-                .contextualisation(latestFocusedGroupContextSoftDis)
-                .label("agentLtstFcsdGrpCntxtSoftDist")
-                .build();
-
-        new Scenario(agentLtstFcsdGrpCntxtSoftDist, FINAL_PRESENTATION_SCENARIO_FILE).execute();
     }
 
     /**
@@ -290,8 +205,6 @@ class Main {
         if (agent.getModels().getRepresentationByName("Hyzio") != null)
             throw new IllegalStateException("You already asked about Hyzio");
         int t = 0;
-
-        Contextualisation contextualisation = null;//new LatestFilteringContextualisation(new Distance(2));
 
         agent.getModels().addNameToModel(qrCodes[0], "Hyzio");
         ConversationSimulator c1 = new ConversationSimulator(agent);
@@ -402,8 +315,6 @@ class Main {
         if (agent.getModels().getRepresentationByName("Hyzio") != null)
             throw new IllegalStateException("You already asked about Hyzio");
         int t = 0;
-
-        Contextualisation contextualisation = null;//new LatestFilteringContextualisation(new Distance(2));
 
         agent.getModels().addNameToModel(qrCodes[0], "Hyzio");
         ConversationSimulator c1 = new ConversationSimulator(agent);
@@ -541,7 +452,6 @@ class Main {
         int t = 9;
 
         agent.getModels().addNameToModel(qrCodes[1], "Rysio");
-        Contextualisation contextualisation = null;//new LatestFilteringContextualisation(new Distance(2));
 
         ConversationSimulator conversation = new ConversationSimulator(agent);
 

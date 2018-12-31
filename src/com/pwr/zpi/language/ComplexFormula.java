@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class ComplexFormula extends Formula implements Comparable<ComplexFormula> {
 
     /**
-     * todo
+     * to.do
      */
     private static final int COMPLEMENTARY_CONJ_FORMULAS_NUMBER = 4;
     /**

@@ -283,7 +283,7 @@ public class Agent {
         public AgentBuilder() {
             /*if (Agent.database != null)
                 Agent.database.deleteDatabase();
-            this.database = Agent.database = new DatabaseAO(ObjectType.getObjectTypes());*/ //todo
+            this.database = Agent.database = new DatabaseAO(ObjectType.getObjectTypes());*/ //to.do
 
             if (Agent.database == null)
                 Agent.database = new DatabaseAO(ObjectType.getObjectTypes());

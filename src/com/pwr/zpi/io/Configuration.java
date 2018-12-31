@@ -97,7 +97,7 @@ public class Configuration {
     private static final double CONJ_KNOW, DEF_CONJ_KNOW = 1;
 
     /**
-     * Thresholds for modal disjunctions. //TODO rozwazyc inne wartosci
+     * Thresholds for modal disjunctions.
      */
     private static final double DISJ_MIN_POS, DEF_DISJ_MIN_POS = 0.4;
     private static final double DISJ_MAX_POS, DEF_DISJ_MAX_POS = 0.55;

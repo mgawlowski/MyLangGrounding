@@ -7,7 +7,6 @@ import com.pwr.zpi.conversation.ConversationSimulator;
 import com.pwr.zpi.core.Agent;
 import com.pwr.zpi.core.memory.episodic.Observation;
 import com.pwr.zpi.exceptions.InvalidScenarioException;
-import com.pwr.zpi.core.memory.holons.context.contextualisation.Contextualisation;
 import com.pwr.zpi.io.Configuration;
 import com.pwr.zpi.language.Trait;
 import com.pwr.zpi.core.memory.semantic.identifiers.QRCode;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class implements realisation of scenario of conversation with agent.
- * todo
+ * to.do
  *
  */
 public class Scenario {
@@ -36,7 +35,6 @@ public class Scenario {
     private static final String SCENARIOS_DIR = Configuration.SCENARIOS_DIR;
 
     private Agent agent;
-    private Contextualisation contextualisation;
     private List<String> IndModIDs;
     private List<Trait> traits;
     private ConversationSimulator conversation;

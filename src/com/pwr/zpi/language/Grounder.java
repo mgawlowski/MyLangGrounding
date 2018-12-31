@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class contains methods used in process of grounding natural language.
- * //todo
+ * //to.do
  *
  * @author Grzegorz Kostkowski
  * @author Jarema Radom

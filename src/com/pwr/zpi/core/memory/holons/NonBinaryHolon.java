@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-
 /**
  * This class implements non-binary holon which is related to complex formulas and provides summarization them.
  * Foundations for non-binary holon are related with conjunctive grounding sets and respective relative cardinality.
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
  *
  * @author Mateusz Gawlowski
  */
+
 public class NonBinaryHolon implements Holon{
     /**
      * Note: formula is given in standard form, namely: without any negations.

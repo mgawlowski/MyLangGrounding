@@ -14,11 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class works with non-binary holon on determining exact relative grounding cardinality for each affected
- * complex formula.
- * In case of summaries for conjunctions, relatives grounding cardinality is fixed straight from respective conjunctive
- * grounding sets. In case of disjunctions, such values are determined based on relative grounding cardinality for
- * conjunctions.
+ * ...
  *
  * @author Mateusz Gawlowski
  */

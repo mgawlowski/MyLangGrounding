@@ -1,6 +1,5 @@
 package com.pwr.zpi.core.memory.holons;
 
-
 import com.pwr.zpi.core.memory.episodic.BaseProfile;
 import com.pwr.zpi.core.memory.episodic.DistributedKnowledge;
 import com.pwr.zpi.exceptions.InvalidFormulaException;
@@ -18,16 +17,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Represents belief on simple formula.
+ * Holon that represents summarizations of simple formula.
  *
+ * @author Mateusz Gawlowski
  */
+
 public class BinaryHolon implements Holon {
-    /**
-     * Represents ratio of IS,Is_Not and Mayhaps observations
-     */
+
     protected Pair<Double, Double> Tao;
     protected List<Formula> formula;
-    protected  Map<Formula, Set<BaseProfile>> currContext;
+    protected Map<Formula, Set<BaseProfile>> currContext;
     protected int timestamp;
     protected DistributedKnowledge dk;
 
@@ -39,12 +38,7 @@ public class BinaryHolon implements Holon {
     }
 
 
-    /**
-     * Updates holon's tao including observations taken until Distributed knowledge's timestamp
-     * @param dk Distributed knowledge for respective grounding sets related with certain formula.
-     * @throws InvalidFormulaException
-     * @throws NotApplicableException
-     */
+    //todo zobaczyc jak bylo przed contextami
     public boolean update(DistributedKnowledge dk) throws InvalidFormulaException, NotApplicableException {
 
         this.dk=dk;

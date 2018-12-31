@@ -1,6 +1,5 @@
 package com.pwr.zpi.core.memory.holons;
 
-
 import com.pwr.zpi.core.memory.episodic.DistributedKnowledge;
 import com.pwr.zpi.exceptions.InvalidFormulaException;
 import com.pwr.zpi.exceptions.NotApplicableException;

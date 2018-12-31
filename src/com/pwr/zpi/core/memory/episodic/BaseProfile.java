@@ -12,7 +12,7 @@ import java.util.*;
 
 /**
  * Represents state of world from agent perspective. It's established for certain moment in time.
- * //todo
+ * //to.do
  * @author Grzegorz Kostkowski
  */
 public class  BaseProfile {
@@ -321,7 +321,7 @@ public class  BaseProfile {
             throw new IllegalStateException("Array not specified or empty.");
         if (baseProfiles.length>1) {
             BaseProfile toModify = baseProfiles[0];
-            throw new NotImplementedException(); //todo implement if required
+            throw new NotImplementedException(); //to.do implement if required
         }
     }
 
@@ -330,7 +330,7 @@ public class  BaseProfile {
     }
 
     /**
-     * //todo co to robi
+     * //to.do co to robi
      * @param P
      * @param time
      * @return

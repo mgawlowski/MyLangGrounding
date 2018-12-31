@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Stores collection of all holons in agent's memory.
+ * Collection of all holons present in agent's memory.
  *
  * @author Mateusz Gawlowski
  */
