@@ -8,6 +8,10 @@ import com.pwr.zpi.language.Formula;
 import com.pwr.zpi.language.SimpleFormula;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+//todo - dokumentacja
+//todo - cykl życia
 
 /**
  * ...
@@ -28,13 +32,13 @@ public class HolonsManager {
     }
 
     private void updateRepository(int timestamp) {
-        if(currTimestamp != timestamp) {
+        if (currTimestamp != timestamp) {
             currTimestamp = timestamp;
             baseProfilesRepository = episodicMemory.getBaseProfiles(timestamp, BPCollection.MemoryType.WM);
         }
     }
 
-    public void updateEveryHolon(int timestamp){
+    public void updateEveryHolon(int timestamp) {
         updateRepository(timestamp);
         for (Holon h : holons) {
             updateHolon(h);
@@ -45,13 +49,16 @@ public class HolonsManager {
         updateRepository(timestamp);
 
         Holon holon = getHolon(formula);
-        if(holon == null){
+        if (holon == null) {
             holon = createHolon(formula);
+//            System.out.println("create: " + holon);
             return holon.getSummaries();
         }
-        if(!isHolonUpToDate(holon)){
+        if (!isHolonUpToDate(holon)) {
+//            System.out.println(">>>>>>updating");
             updateHolon(holon);
         }
+        System.out.println(">" + holon);
         return holon.getSummaries();
     }
 
@@ -64,7 +71,7 @@ public class HolonsManager {
         } catch (InvalidFormulaException e) {
             e.printStackTrace();
         }
-        if(holon != null) {
+        if (holon != null) {
             holons.add(holon);
         }
         return holon;
@@ -84,6 +91,9 @@ public class HolonsManager {
     }
 
     private void updateHolon(Holon holon) {
-        holon.update(baseProfilesRepository, currTimestamp);
+        Set<BaseProfile> newBaseProfiles = baseProfilesRepository.stream().
+                filter(p -> p.getTimestamp() > holon.getTimestamp()).
+                collect(Collectors.toCollection(TreeSet::new));
+        holon.update(newBaseProfiles, currTimestamp);
     }
 }

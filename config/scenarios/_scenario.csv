@@ -6,6 +6,6 @@ Arthur;;;;;;;;
 timestamp;related_object;happy;dirty;white;playing;eating;;
 0;Arthur;1;1;0;1;1;;
 1;Arthur;1;1;0;1;1;;
-2;Arthur;1;1;0;1;1;;
-3;Arthur;1;1;0;1;1;;
-4;Arthur;0;0;0;1;1;Is Arthur happy and dirty;??????
+2;Arthur;0;1;0;1;1;Is Arthur happy;??????
+3;Arthur;-1;-1;0;1;1;;
+4;Arthur;0;0;0;1;1;Is Arthur not happy;??????

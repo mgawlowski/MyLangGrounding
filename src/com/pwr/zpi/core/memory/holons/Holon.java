@@ -15,19 +15,22 @@ import java.util.*;
 public interface Holon extends Comparable<Holon> {
 
     int getTimestamp();
+
     boolean update(Set<BaseProfile> baseProfiles, int newTimestamp);
+
     Map<Formula, Double> getSummaries();
+
     List<Formula> getAffectedFormulas();
 
     default int compareTo(Holon o) {
-        double res=0, res2=0;
-        for (Formula f:getSummaries().keySet()) {
+        double res = 0, res2 = 0;
+        for (Formula f : getSummaries().keySet()) {
             res = f.hashCode() + getSummaries().get(f);
         }
 
-        for (Formula f:o.getSummaries().keySet()) {
+        for (Formula f : o.getSummaries().keySet()) {
             res2 = f.hashCode() + o.getSummaries().get(f);
         }
-        return res > res2 ? 1: (res < res2 ? -1 : 0);
+        return res > res2 ? 1 : (res < res2 ? -1 : 0);
     }
 }

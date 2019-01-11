@@ -35,8 +35,6 @@ public class BPCollection {
     private static final int MAX_WM_CAPACITY = Configuration.MAX_WM_CAPACITY;
 
 
-
-
     /**
      * Describes allowed types of agent's memory. According to the accepted theoretical model, there are two memory
      * levels: Working memory and long-term memory.
@@ -44,6 +42,7 @@ public class BPCollection {
     public enum MemoryType {
         WM, LM;
     }
+
     /**
      * Map of BaseProfile representing working memory - each for successive moments in time - from beginning till
      * current timestamp set for this BPCollection.
@@ -56,6 +55,7 @@ public class BPCollection {
      */
     protected Set<BaseProfile> longTermMemory;
     private int timestamp;
+
     /**
      * Simple constructor to initialize empty BPCollection with initials values. Sets timestamp to default value.
      */
@@ -94,17 +94,18 @@ public class BPCollection {
 
     /**
      * By default, inserts to bp located in wm
+     *
      * @param newObservation
      */
     public void includeNewObservation(Observation newObservation, IndividualModel individualModel) {
         int newTimestamp = newObservation.getTimestamp();
         BaseProfile alreadyExisting = null;
-        if ((alreadyExisting=getBaseProfile(newTimestamp, MemoryType.WM)) == null) {
+        if ((alreadyExisting = getBaseProfile(newTimestamp, MemoryType.WM)) == null) {
             alreadyExisting = new BaseProfile(newObservation.getTimestamp());
             addToMemory(alreadyExisting);
         }
 
-        for (Trait trait: newObservation.getValuedTraits().keySet())
+        for (Trait trait : newObservation.getValuedTraits().keySet())
             alreadyExisting.addObservationByValue(individualModel, trait, newObservation.getValuedTraits().get(trait));
     }
 
@@ -119,7 +120,7 @@ public class BPCollection {
      * @param type
      * @param overrideIfExisting
      */
-    public void addToMemory(MemoryType type, boolean overrideIfExisting, BaseProfile ... newBPs) {
+    public void addToMemory(MemoryType type, boolean overrideIfExisting, BaseProfile... newBPs) {
         for (BaseProfile newBP : newBPs) {
             Set<BaseProfile> affectedMemory = getMemoryContainer(type);
             BaseProfile alreadyExisted = getBaseProfile(newBP.getTimestamp());
@@ -144,7 +145,7 @@ public class BPCollection {
      *
      * @param newBPs
      */
-    public void addToMemory(BaseProfile ... newBPs) {
+    public void addToMemory(BaseProfile... newBPs) {
         addToMemory(MemoryType.WM, newBPs);
     }
 
@@ -154,7 +155,7 @@ public class BPCollection {
      * @param newBPs
      * @param type
      */
-    public void addToMemory(MemoryType type, BaseProfile ... newBPs) {
+    public void addToMemory(MemoryType type, BaseProfile... newBPs) {
         addToMemory(type, OVERRIDE_IF_EXISTS, newBPs);
     }
 
@@ -270,6 +271,7 @@ public class BPCollection {
 
     /**
      * Flatten given array of base profiles set to single set with base profiles.
+     *
      * @param bps
      * @return
      * @throws IllegalStateException
@@ -347,6 +349,7 @@ public class BPCollection {
 
     /**
      * Returns memory container specified by memory type.
+     *
      * @param type
      * @return
      */
@@ -391,22 +394,22 @@ public class BPCollection {
         return res;
     }
 
-    public double getMayhapsNumber(int endTimestamp,Formula formula,int i){
+    public double getMayhapsNumber(int endTimestamp, Formula formula, int i) {
         Set<BaseProfile> out = new HashSet<>();
         Set<BaseProfile> observations = getBaseProfiles(endTimestamp, MemoryType.LM);
         Set<BaseProfile> observations2 = getBaseProfiles(endTimestamp, MemoryType.WM);
         observations.addAll(observations2);
         double suma = 0;
         for (BaseProfile bp : observations) {
-            if(bp.checkIfObserved(formula.getModel(), formula.getTraits().get(i), State.MAYHAPS)){
+            if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(i), State.MAYHAPS)) {
                 suma++;
             }
         }
 
-        Logger.getAnonymousLogger().log(Level.FINEST, "Suma " +suma + " obser " + observations.size() + " / "  + suma/(observations.size()) );
-        if(suma>0){
-        return suma/observations.size();}
-        else return 0.0;
+        Logger.getAnonymousLogger().log(Level.FINEST, "Suma " + suma + " obser " + observations.size() + " / " + suma / (observations.size()));
+        if (suma > 0) {
+            return suma / observations.size();
+        } else return 0.0;
     }
 
     public double getCompleteSize(int endTimestamp) {
@@ -415,6 +418,7 @@ public class BPCollection {
         observations.addAll(observations2);
         return observations.size();
     }
+
     public Set<IndividualModel> getIMsByTraitState(Trait trait, State state, int endTimestamp) {
         return getIMsByTraitState(trait, state, endTimestamp, MemoryType.WM, MemoryType.LM);
     }
@@ -452,6 +456,7 @@ public class BPCollection {
 
     /**
      * Returns number of included base profiles for given memory container.
+     *
      * @return Number of contained base profiles.
      */
     public int getEpisodicBaseSize(MemoryType memoryType) {
@@ -460,6 +465,7 @@ public class BPCollection {
 
     /**
      * Returns number of included base profiles.
+     *
      * @return Number of contained base profiles.
      */
     public int getEpisodicBaseSize() {

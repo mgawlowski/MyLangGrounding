@@ -814,7 +814,7 @@ public class Grounder {
      * @param formula Considered Formula
      * @return
      */
-    public static Double simpleFormulaFinalGrounder(Formula formula, Set<BaseProfile> groundingSet, Set<BaseProfile> inWM) throws InvalidFormulaException, NotApplicableException {
+    public static Double simpleFormulaFinalGrounder(Formula formula, Set<BaseProfile> groundingSet, Set<BaseProfile> baseProfileSet) throws InvalidFormulaException, NotApplicableException {
         double sum = 0;
 
         for (BaseProfile bp : groundingSet) {
@@ -829,7 +829,7 @@ public class Grounder {
 
         if (sum != 0) {
 
-            return sum / relativeCard(Grounder.getGroundingSets(formula.getComplementaryFormulas(), BPCollection.asBaseProfilesSet(inWM)), formula);
+            return sum / relativeCard(Grounder.getGroundingSets(formula.getComplementaryFormulas(), BPCollection.asBaseProfilesSet(baseProfileSet)), formula);
         }
         return 0.0;
     }

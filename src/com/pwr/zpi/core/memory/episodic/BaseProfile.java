@@ -13,9 +13,10 @@ import java.util.*;
 /**
  * Represents state of world from agent perspective. It's established for certain moment in time.
  * //to.do
+ *
  * @author Grzegorz Kostkowski
  */
-public class  BaseProfile {
+public class BaseProfile implements Comparable<BaseProfile> {
     /**
      * Map of valuedTraits and related collections of individual models. If some collection is related with certain trait, then
      * it mean that all observations in that collections HAVE this trait.
@@ -38,6 +39,7 @@ public class  BaseProfile {
 
     /**
      * Common constructor for initializing new empty base profile related with given timestamp.
+     *
      * @param timestamp
      */
     public BaseProfile(int timestamp) {
@@ -51,6 +53,7 @@ public class  BaseProfile {
 
     /**
      * Constructor used for creating complete base profile object.
+     *
      * @param baseProfileMaps Maps should be in following order: describedByTraits, notDescribedByTraits,
      *                        indefiniteByTraits
      * @param timestamp
@@ -74,12 +77,15 @@ public class  BaseProfile {
     public Map<Trait, Set<IndividualModel>> getDescribedByTraits() {
         return describedByTraits;
     }
+
     public Map<Trait, Set<IndividualModel>> getNotDescribedByTraits() {
         return notDescribedByTraits;
     }
+
     public Map<Trait, Set<IndividualModel>> getIndefiniteByTraits() {
         return indefiniteByTraits;
     }
+
     public int getTimestamp() {
         return timestamp;
     }
@@ -87,12 +93,15 @@ public class  BaseProfile {
     public void setTimestamp(int timestamp) {
         this.timestamp = timestamp;
     }
+
     public void setDescribedByTraits(Map<Trait, Set<IndividualModel>> describedByTraits) {
         this.describedByTraits = describedByTraits;
     }
+
     public void setNotDescribedByTraits(Map<Trait, Set<IndividualModel>> notDescribedByTraits) {
         this.notDescribedByTraits = notDescribedByTraits;
     }
+
     public void setIndefiniteByTraits(Map<Trait, Set<IndividualModel>> indefiniteByTraits) {
         this.indefiniteByTraits = indefiniteByTraits;
     }
@@ -125,8 +134,8 @@ public class  BaseProfile {
     /**
      * Returns set of individual models related to given map in this base profile.
      *
-     * @param relatedMap One of following (for this base profile): describedByTraits, notDescribedByTrait
-     *                   or indefiniteByTraits set.
+     * @param relatedMap  One of following (for this base profile): describedByTraits, notDescribedByTrait
+     *                    or indefiniteByTraits set.
      * @param resultedSet Set witch will be extended to resulted individual models.
      * @return Given as parameter set extended to set of Individual models associated with given map.
      */
@@ -136,7 +145,7 @@ public class  BaseProfile {
         return resultedSet;
     }
 
-    public Set<IndividualModel> getAffectedIMs(Set<IndividualModel> resultedSet, State ... relatedStates) {
+    public Set<IndividualModel> getAffectedIMs(Set<IndividualModel> resultedSet, State... relatedStates) {
         Set<IndividualModel> res = new HashSet<>();
         for (State state : relatedStates) {
             res.addAll(getAffectedIMs(getContainer(state), resultedSet));
@@ -144,17 +153,17 @@ public class  BaseProfile {
         return res;
     }
 
-    public Set<IndividualModel> getAffectedIMs(State ... relatedStates) {
+    public Set<IndividualModel> getAffectedIMs(State... relatedStates) {
         return getAffectedIMs(new HashSet<>(), relatedStates);
     }
 
-        /**
-         * Returns set of all individual models included in given base profiles. Used when as an example merging base profiles
-         * from working memory and long-term memory.
-         *
-         * @param baseProfileSet Set of base profiles.
-         * @return Set of observations.
-         */
+    /**
+     * Returns set of all individual models included in given base profiles. Used when as an example merging base profiles
+     * from working memory and long-term memory.
+     *
+     * @param baseProfileSet Set of base profiles.
+     * @return Set of observations.
+     */
     public static Set<IndividualModel> getAffectedIMs(Collection<BaseProfile> baseProfileSet) {
         Set<IndividualModel> res = new HashSet<>();
         for (BaseProfile bp : baseProfileSet)
@@ -162,7 +171,7 @@ public class  BaseProfile {
         return res;
     }
 
-    public static Set<IndividualModel> getAffectedIMs(BaseProfile ... baseProfileArr) {
+    public static Set<IndividualModel> getAffectedIMs(BaseProfile... baseProfileArr) {
         return getAffectedIMs(Arrays.asList(baseProfileArr));
     }
 
@@ -226,6 +235,7 @@ public class  BaseProfile {
     /**
      * This method determines weather given object was included in this base profile observations and if
      * one of its trait's value is as expected. This expectation is expressed through state parameter.
+     *
      * @param object
      * @param trait
      * @param state
@@ -241,7 +251,8 @@ public class  BaseProfile {
                 return notDescribedByTraits.containsKey(trait) && new ArrayList<>(notDescribedByTraits.get(trait)).contains(object);
             case MAYHAPS:
                 return indefiniteByTraits.containsKey(trait) && new ArrayList<>(indefiniteByTraits.get(trait)).contains(object);
-            default: return false;
+            default:
+                return false;
         }
     }
 
@@ -291,6 +302,7 @@ public class  BaseProfile {
 
     /**
      * Adds given observation to base profile. Destination group is selected according to given boolean value.
+     *
      * @param individualModel
      * @param relatedTrait
      * @param value
@@ -314,12 +326,13 @@ public class  BaseProfile {
 
     /**
      * Joins observations from all given profiles into one base profile (it's the first one - will be modified ).
+     *
      * @param baseProfiles
      */
-    public static void joinBaseProfiles(BaseProfile ... baseProfiles) {
-        if (baseProfiles == null || baseProfiles.length ==0)
+    public static void joinBaseProfiles(BaseProfile... baseProfiles) {
+        if (baseProfiles == null || baseProfiles.length == 0)
             throw new IllegalStateException("Array not specified or empty.");
-        if (baseProfiles.length>1) {
+        if (baseProfiles.length > 1) {
             BaseProfile toModify = baseProfiles[0];
             throw new NotImplementedException(); //to.do implement if required
         }
@@ -331,6 +344,7 @@ public class  BaseProfile {
 
     /**
      * //to.do co to robi
+     *
      * @param P
      * @param time
      * @return
@@ -342,6 +356,7 @@ public class  BaseProfile {
     /**
      * This methods determines if given IM is described in this base profile (according to given trait) and if this
      * description is unambiguous - namely, state for such trait is IS or IS_NOT.
+     *
      * @param model
      * @param selectedTrait
      * @return
@@ -392,13 +407,14 @@ public class  BaseProfile {
 
     /**
      * Method returns all traits from given map which are related to specified IM in this base profile.
-     * @param selectedMap Could be one of following: describedByTraits/notDescribedByTraits/indefiniteByTraits
+     *
+     * @param selectedMap   Could be one of following: describedByTraits/notDescribedByTraits/indefiniteByTraits
      * @param relatedObject Individual model
      * @return
      */
     public List<Trait> getRelatedTraits(IndividualModel relatedObject, Map<Trait, Set<IndividualModel>> selectedMap) {
         List<Trait> res = new ArrayList<>();
-        for (Map.Entry<Trait, Set<IndividualModel>> entry: selectedMap.entrySet()) {
+        for (Map.Entry<Trait, Set<IndividualModel>> entry : selectedMap.entrySet()) {
             if (new ArrayList(entry.getValue()).contains(relatedObject))
                 res.add(entry.getKey());
         }
@@ -420,4 +436,8 @@ public class  BaseProfile {
         }
     }
 
+    @Override
+    public int compareTo(BaseProfile o) {
+        return Integer.compare(timestamp, o.timestamp);
     }
+}

@@ -14,13 +14,16 @@ import java.util.*;
  * @author Mateusz Gawlowski
  */
 
-public class NonBinaryHolon implements Holon{
+public class NonBinaryHolon implements Holon {
 
-    Formula relatedFormula;
-    Map<Formula, Double> summaries;
+    private Formula relatedFormula;
+    private Map<Formula, Double> summaries;
     private int timestamp;
+    private int retrospectiveCard;
 
     NonBinaryHolon(Formula formula, Set<BaseProfile> baseProfiles, int timestamp) {
+        this.timestamp = 0;
+        retrospectiveCard = 0;
         relatedFormula = formula;
         summaries = new HashMap<>();
         update(baseProfiles, timestamp);
@@ -32,10 +35,10 @@ public class NonBinaryHolon implements Holon{
     }
 
     @Override
-    public boolean update(Set<BaseProfile> baseProfiles, int newTimestamp) {
+    public boolean update(Set<BaseProfile> newBaseProfiles, int newTimestamp) {
         try {
             List<Formula> complementaryFormulas = relatedFormula.getComplementaryFormulas();
-            Map<Formula, Set<BaseProfile>> groundingSetsMap = Grounder.getGroundingSets(complementaryFormulas, BPCollection.asBaseProfilesSet(baseProfiles));
+            Map<Formula, Set<BaseProfile>> groundingSetsMap = Grounder.getGroundingSets(complementaryFormulas, BPCollection.asBaseProfilesSet(newBaseProfiles));
             summaries = Grounder.relativeCard_(groundingSetsMap);
         } catch (InvalidFormulaException e) {
             e.printStackTrace();
@@ -57,7 +60,7 @@ public class NonBinaryHolon implements Holon{
 
     @Override
     public String toString() {
-        return "NewNonBinaryHolon{" +
+        return "NonBinaryHolon{" +
                 "summaries=" + summaries +
                 '}';
     }
