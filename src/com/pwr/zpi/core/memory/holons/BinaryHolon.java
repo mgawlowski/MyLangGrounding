@@ -1,7 +1,7 @@
 package com.pwr.zpi.core.memory.holons;
 
+import com.pwr.zpi.core.memory.episodic.BPCollection;
 import com.pwr.zpi.core.memory.episodic.BaseProfile;
-import com.pwr.zpi.core.memory.episodic.DistributedKnowledge;
 import com.pwr.zpi.exceptions.InvalidFormulaException;
 import com.pwr.zpi.exceptions.NotApplicableException;
 import com.pwr.zpi.language.Formula;
@@ -9,12 +9,7 @@ import com.pwr.zpi.language.Grounder;
 import com.pwr.zpi.language.SimpleFormula;
 import com.pwr.zpi.util.Pair;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 
 /**
  * Holon that represents summarizations of simple formula.
@@ -26,124 +21,47 @@ public class BinaryHolon implements Holon {
 
     protected Pair<Double, Double> Tao;
     protected List<Formula> formula;
-    protected Map<Formula, Set<BaseProfile>> currContext;
-    protected int timestamp;
-    protected DistributedKnowledge dk;
+    private int timestamp;
 
-    public BinaryHolon(DistributedKnowledge dk) throws InvalidFormulaException, NotApplicableException {
-        this.formula = dk.getComplementaryFormulas();
-        timestamp = dk.getTimestamp();
-        this.dk = dk;
-        update(dk);
+    public BinaryHolon(Formula formula, Set<BaseProfile> baseProfiles, int timestamp) throws InvalidFormulaException {
+        this.formula = formula.getComplementaryFormulas();
+        update(baseProfiles, timestamp);
     }
 
+    @Override
+    public int getTimestamp() {
+        return timestamp;
+    }
 
-    //todo zobaczyc jak bylo przed contextami
-    public boolean update(DistributedKnowledge dk) throws InvalidFormulaException, NotApplicableException {
+    @Override
+    public boolean update(Set<BaseProfile> baseProfiles, int newTimestamp) {
+        double sumPositive = 0;
+        double sumNegative = 0;
+        try {
+            Set<BaseProfile> groundingSetsMap;
+            groundingSetsMap = Grounder.getGroundingSet(formula.get(0), BPCollection.asBaseProfilesSet(baseProfiles));
+            sumPositive += Grounder.simpleFormulaFinalGrounder(formula.get(0), groundingSetsMap, baseProfiles);
+            groundingSetsMap = Grounder.getGroundingSet(formula.get(1), BPCollection.asBaseProfilesSet(baseProfiles));
+            sumNegative += Grounder.simpleFormulaFinalGrounder(formula.get(1), groundingSetsMap, baseProfiles);
 
-        this.dk=dk;
-        if (dk.getFormula().getType() != Formula.Type.SIMPLE_MODALITY) {
-            throw new InvalidFormulaException();
-        } else {
-            double sumPositive = 0;
-            double sumNegative = 0;
-            if (((SimpleFormula) dk.getComplementaryFormulas().get(0)).isNegated()) {
-                sumPositive += Grounder.determineFulfillmentDouble(dk, dk.getComplementaryFormulas().get(0),currContext);
-                sumNegative += Grounder.determineFulfillmentDouble(dk,  dk.getComplementaryFormulas().get(1),currContext);
-            } else {
-                sumNegative += Grounder.determineFulfillmentDouble(dk,  dk.getComplementaryFormulas().get(1),currContext);
-                sumPositive += Grounder.determineFulfillmentDouble(dk,  dk.getComplementaryFormulas().get(0),currContext);
+            if (((SimpleFormula) formula.get(0)).isNegated()) {
+                double temp = sumPositive;
+                sumPositive = sumNegative;
+                sumNegative = temp;
             }
-            Logger.getAnonymousLogger().log(Level.FINEST, sumNegative + " " + sumPositive + " " + dk.getRelatedObservationsBase().getCompleteSize(dk.getTimestamp()));
-            Tao = new Pair<Double, Double>(sumPositive,sumNegative);
+        } catch (InvalidFormulaException | NotApplicableException e) {
+            e.printStackTrace();
+            return false;
         }
+        System.out.println("Is: " + sumPositive + " Not: " + sumNegative);
+        timestamp = newTimestamp;
+        Tao = new Pair<>(sumPositive, sumNegative);
         return true;
-    }
-
-
-    /**
-     *
-     * @return Complementary Formula regarding this specific Holon
-     */
-    public List<Formula> getFormula() {
-        return formula;
-    }
-
-    /**
-     *  Checks if given formula is one of complementary formulas of this Holon.
-     * @param f
-     * @return
-     * @throws InvalidFormulaException
-     */
-    @Override
-    public boolean isApplicable(Formula f) throws InvalidFormulaException {
-        return formula.contains(f);
-    }
-
-    /**
-     *
-     * @return Returns IS side of Tao
-     */
-    public double getP() {
-        return Tao.getK();
-    }
-
-    /**
-     *
-     * @return Returns IS_NOT side of Tao
-     */
-    public double getnot_P() {
-        return Tao.getV();
-    }
-    /*public com.pwr.zpi.language.Operators.Type getDominant(){
-	return Tao.getP() > Tao.getnot_P() ? com.pwr.zpi.language.Operators.Type.KNOW :com.pwr.zpi.language.Operators.Type.NOT ;
-	}*/
-
-    /**
-     *
-     * @return Returns Pair of strongest value in Tao,first part of pair is true when IS side is stronger,otherwise false
-     */
-    @Override
-    public Pair<Boolean, Double> getStrongest() {
-        return Tao.getK() >= Tao.getV() ? (new Pair<Boolean, Double>(true, Tao.getK())) : (new Pair<Boolean, Double>(false, Tao.getV()));
-    }
-    /**
-     *
-     * @return Returns Pair of weakest value in Tao,first part of pair is true when IS side is stronger,otherwise false
-     */
-    @Override
-    public Pair<Boolean, Double> getWeakest() {
-        return Tao.getK() < Tao.getV() ? (new Pair<Boolean, Double>(true, Tao.getK())) : (new Pair<Boolean, Double>(false, Tao.getV()));
-    }
-
-    /**
-     *
-     * @return HolonKind,Binary in this situation.
-     */
-    @Override
-    public HolonKind getKind() {
-        return Holon.HolonKind.Binary;
-    }
-
-
-    @Override
-    public void update() throws InvalidFormulaException, NotApplicableException {
-        update(dk);
-    }
-
-    @Override
-    public Double getSummary(Formula formula) {
-        if(((SimpleFormula)formula).isNegated()){
-            return Tao.getV();
-        }
-        else{
-            return Tao.getK();
-        }
     }
 
     @Override
     public Map<Formula, Double> getSummaries()  {
-        Map<Formula, Double> out = new HashMap<Formula, Double>();
+        Map<Formula, Double> out = new HashMap<>();
 
             if(((SimpleFormula)formula.get(0)).isNegated()) {
                 out.put(formula.get(0),Tao.getV() );
@@ -156,48 +74,9 @@ public class BinaryHolon implements Holon {
         return out;
     }
 
-    /**
-     * Returns map of summaries only for given Formulas.
-     *
-     * @param selectedFormulas
-     */
-    @Override
-    public Map<Formula, Double> getSummaries(List<Formula> selectedFormulas) {
-        if(selectedFormulas.size()==1){
-            HashMap<Formula, Double> out = new HashMap<Formula, Double>();
-            out.put(selectedFormulas.get(0),getSummary(selectedFormulas.get(0)));
-            return out;
-        }
-        else{
-            return getSummaries();
-        }
-    }
-
-    /**
-     * Returns list of complementary formulas which were used when building this holon.
-     */
     @Override
     public List<Formula> getAffectedFormulas() {
         return formula;
     }
 
-    /**
-     * Returns context which was used to build grounding sets for this holon.
-     */
-    public Integer getTimestamp() {
-        return timestamp;
-    }
-
-/*
-    public int compareTo(Holon o) {
-        double res=0, res2=0;
-        for (Formula f:formula) {
-            res = f.hashCode() ;
-        }
-
-        for (Formula f:o.getFormula()) {
-            res2 = f.hashCode() ;
-        }
-        return res > res2 ? 1: (res < res2 ? -1 : 0);
-    }*/
 }

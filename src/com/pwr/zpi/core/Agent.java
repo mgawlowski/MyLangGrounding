@@ -9,7 +9,6 @@ import com.pwr.zpi.core.memory.episodic.BPCollection;
 import com.pwr.zpi.core.memory.episodic.BaseProfile;
 import com.pwr.zpi.core.memory.episodic.DistributedKnowledge;
 import com.pwr.zpi.core.memory.episodic.Observation;
-import com.pwr.zpi.core.memory.holons.HolonCollection;
 import com.pwr.zpi.core.memory.holons.HolonsManager;
 import com.pwr.zpi.core.memory.semantic.IMCollection;
 import com.pwr.zpi.core.memory.semantic.IndividualModel;
@@ -82,10 +81,6 @@ public class Agent {
 
     public void setModels(IMCollection models) {
         this.models = models;
-    }
-
-    public HolonCollection getHolon() {
-        return holonsManager.getHolonsCollection();
     }
 
     @Deprecated //uzywamy updateMemory()
@@ -228,13 +223,9 @@ public class Agent {
     }
 
     public void updateBeliefs(){
-        try {
-            Logger.getAnonymousLogger().log(Level.FINE, "Updating beliefs for t="+knowledgeBase.getTimestamp()+"...");
-            holonsManager.updateBeliefs(knowledgeBase.getTimestamp());
-            Logger.getAnonymousLogger().log(Level.INFO, "Update is done.");
-        } catch (InvalidFormulaException | NotApplicableException e) {
-            Logger.getAnonymousLogger().log(Level.WARNING, "Agent was not able to update holons.");
-        }
+        Logger.getAnonymousLogger().log(Level.FINE, "Updating beliefs for t="+knowledgeBase.getTimestamp()+"...");
+        holonsManager.updateEveryHolon(knowledgeBase.getTimestamp());
+        Logger.getAnonymousLogger().log(Level.INFO, "Update is done.");
     }
 
 

@@ -98,7 +98,7 @@ public class Grounder {
      * @return Grounding set for given formula.
      * @throws InvalidFormulaException
      */
-    private static Set<BaseProfile> getGroundingSet(Formula formula, Set<BaseProfile> all) throws InvalidFormulaException {
+    public static Set<BaseProfile> getGroundingSet(Formula formula, Set<BaseProfile> all) throws InvalidFormulaException {
         if (formula == null || all == null)
             throw new NullPointerException("One of parameters is null.");
 
@@ -782,7 +782,7 @@ public class Grounder {
             mayhapsD = dk.getRelatedObservationsBase().getMayhapsBP(timestamp,formula,i);
         }*/
         if (formula.getType() == Formula.Type.SIMPLE_MODALITY) {
-            return simpleFormulaFinalGrounder(formula, dk, context);
+            return simpleFormulaFinalGrounder(formula, dk);
         } else if (formula.getType() == Formula.Type.MODAL_CONJUNCTION) {
             return complexFormulaFinalGrounder(formula, dk, context);
 
@@ -790,42 +790,46 @@ public class Grounder {
         return 0.0;
     }
 
+    public static Double simpleFormulaFinalGrounder(Formula formula, DistributedKnowledge dk) throws InvalidFormulaException, NotApplicableException {
+        double sum = 0;
+
+        for (BaseProfile bp : dk.getGroundingSet(formula)) {
+            if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS) && !((SimpleFormula) formula).isNegated()) {
+                sum++;
+            } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS_NOT) && ((SimpleFormula) formula).isNegated()) {
+                sum++;
+            } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.MAYHAPS)) {
+                sum++;
+            }
+        }
+        if (sum != 0) {
+            return sum / relativeCard(dk.mapOfGroundingSets(), formula);
+        }
+        return 0.0;
+    }
 
     /**
      * Returns number of occurrences in grounded formulas for given formula.Case of simple formulas.
      *
      * @param formula Considered Formula
-     * @param dk      Distributed knowledge for respective grounding sets related with certain formula.
      * @return
      */
-    public static Double simpleFormulaFinalGrounder(Formula formula, DistributedKnowledge dk, Map<Formula, Set<BaseProfile>> context) throws InvalidFormulaException, NotApplicableException {
+    public static Double simpleFormulaFinalGrounder(Formula formula, Set<BaseProfile> groundingSet, Set<BaseProfile> inWM) throws InvalidFormulaException, NotApplicableException {
         double sum = 0;
-        if(context == null ||context.size()==0 ) {
-            for (BaseProfile bp : dk.getGroundingSet(formula)) {
-                if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS) && !((SimpleFormula) formula).isNegated()) {
-                    sum++;
-                } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS_NOT) && ((SimpleFormula) formula).isNegated()) {
-                    sum++;
-                } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.MAYHAPS)) {
-                    sum++;
-                }
-            }
-        } else {
-            if (context.get(formula) != null) {
-                for (BaseProfile bp : context.get(formula)) {
-                    if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS) && !((SimpleFormula) formula).isNegated()) {
-                        sum++;
-                    } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS_NOT) && ((SimpleFormula) formula).isNegated()) {
-                        sum++;
-                    } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.MAYHAPS)) {
-                        sum++;
-                    }
-                }
+
+        for (BaseProfile bp : groundingSet) {
+            if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS) && !((SimpleFormula) formula).isNegated()) {
+                sum++;
+            } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.IS_NOT) && ((SimpleFormula) formula).isNegated()) {
+                sum++;
+            } else if (bp.checkIfObserved(formula.getModel(), formula.getTraits().get(0), State.MAYHAPS)) {
+                sum++;
             }
         }
+
         if (sum != 0) {
 
-            return sum / relativeCard(dk.mapOfGroundingSets(), formula);
+            return sum / relativeCard(Grounder.getGroundingSets(formula.getComplementaryFormulas(), BPCollection.asBaseProfilesSet(inWM)), formula);
         }
         return 0.0;
     }

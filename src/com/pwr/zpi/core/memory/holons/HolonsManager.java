@@ -1,85 +1,89 @@
 package com.pwr.zpi.core.memory.holons;
 
 import com.pwr.zpi.core.Agent;
+import com.pwr.zpi.core.memory.episodic.BPCollection;
+import com.pwr.zpi.core.memory.episodic.BaseProfile;
 import com.pwr.zpi.exceptions.InvalidFormulaException;
-import com.pwr.zpi.exceptions.NotApplicableException;
-import com.pwr.zpi.language.ComplexFormula;
 import com.pwr.zpi.language.Formula;
-import com.pwr.zpi.language.LogicOperator;
+import com.pwr.zpi.language.SimpleFormula;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.*;
 
 /**
  * ...
  *
  * @author Mateusz Gawlowski
  */
+
 public class HolonsManager {
 
-    private static final LogicOperator HOLON_BASE_OPERATOR = LogicOperator.AND;
-    Agent agent;
-    HolonCollection holonsCollection;
-
+    private BPCollection episodicMemory;
+    private Set<BaseProfile> baseProfilesRepository;
+    private int currTimestamp;
+    private Set<Holon> holons;
 
     public HolonsManager(Agent agent) {
-        this.agent = agent;
-        holonsCollection = new HolonCollection(agent);
+        episodicMemory = agent.getKnowledgeBase();
+        holons = new TreeSet<>();
     }
 
-
-    public void updateBeliefs(int timestamp) throws InvalidFormulaException, NotApplicableException {
-        for (Holon h : holonsCollection.getHolonCollection()) {
-            h.update(agent.distributeKnowledge(h.getAffectedFormulas().get(0), timestamp, true));
+    private void updateRepository(int timestamp) {
+        if(currTimestamp != timestamp) {
+            currTimestamp = timestamp;
+            baseProfilesRepository = episodicMemory.getBaseProfiles(timestamp, BPCollection.MemoryType.WM);
         }
     }
 
-    public HolonCollection getHolonsCollection() {
-        return holonsCollection;
+    public void updateEveryHolon(int timestamp){
+        updateRepository(timestamp);
+        for (Holon h : holons) {
+            updateHolon(h);
+        }
     }
 
-    /**
-     * This method is used to retrieve summarization for any available formula. Due to differences in counting summaries
-     * based on provided holon, this method was implemented to provide unified interface for different types of formula.
-     * Method makes use of holon which is built during summaries retrieving process.
-     * @param currFormula
-     * @param timestamp
-     * @return
-     */
-    public Map<Formula, Double> getSummaries(Formula currFormula, int timestamp) {
+    public Map<Formula, Double> getSummaries(Formula formula, int timestamp) {
+        updateRepository(timestamp);
 
-        if (currFormula.usesDirectHolonConstruction()) {
-            return holonsCollection.getHolon(currFormula, timestamp).getSummaries();
-        } else {
-            try {
-                ComplexFormula conjunction = currFormula.transformTo(HOLON_BASE_OPERATOR);
-                Holon conjunctiveHolon = holonsCollection.getHolon(conjunction, timestamp);
-                Map<Formula, Double> res = new HashMap<>();
-                for (Formula complDisj: currFormula.getComplementaryFormulas())
-                    res.put(complDisj, countRelevantSummary(conjunctiveHolon, complDisj));
-                return res;
-            } catch (InvalidFormulaException e) {
-                Logger.getAnonymousLogger().log(Level.WARNING, "Unable to retrieve summarization for given formula.", e);
-                return null;
+        Holon holon = getHolon(formula);
+        if(holon == null){
+            holon = createHolon(formula);
+            return holon.getSummaries();
+        }
+        if(!isHolonUpToDate(holon)){
+            updateHolon(holon);
+        }
+        return holon.getSummaries();
+    }
+
+    private Holon createHolon(Formula formula) {
+        Holon holon = null;
+        try {
+            if (formula instanceof SimpleFormula)
+                holon = new BinaryHolon(formula, baseProfilesRepository, currTimestamp);
+            else holon = new NonBinaryHolon(formula, baseProfilesRepository, currTimestamp);
+        } catch (InvalidFormulaException e) {
+            e.printStackTrace();
+        }
+        if(holon != null) {
+            holons.add(holon);
+        }
+        return holon;
+    }
+
+    private Holon getHolon(Formula formula) {
+        for (Holon h : holons) {
+            if (h.getAffectedFormulas().get(0).isFormulaSimilar(formula)) {
+                return h;
             }
         }
+        return null;
     }
 
-    /**
-     * This method counts summary (relative grounding cardinality) for given disjunctive formula with usage of provided holon.
-     * This holon was built for conjunctive formula which corresponds to provided disjunction (only difference is used operator).
-     *
-     * @param conjunctiveHolon
-     * @param compelDisj
-     * @return
-     */
-    private Double countRelevantSummary(Holon conjunctiveHolon, Formula compelDisj) {
-        List<Formula> selectedConjunctions=compelDisj.getDependentFormulas();
-        Map<Formula, Double> summaries = conjunctiveHolon.getSummaries(selectedConjunctions);
-        return summaries.values().stream().mapToDouble(Double::doubleValue).sum();
+    private boolean isHolonUpToDate(Holon holon) {
+        return holon.getTimestamp() == currTimestamp;
     }
 
+    private void updateHolon(Holon holon) {
+        holon.update(baseProfilesRepository, currTimestamp);
+    }
 }
