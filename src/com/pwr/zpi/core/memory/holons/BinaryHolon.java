@@ -12,8 +12,6 @@ import com.pwr.zpi.util.Pair;
 import java.util.*;
 
 /**
- * Holon that represents summarizations of simple formula.
- *
  * @author Mateusz Gawlowski
  */
 
@@ -30,6 +28,23 @@ public class BinaryHolon implements Holon {
         tao = new Pair<>(0.0, 0.0);
         this.formula = formula.getComplementaryFormulas();
         update(baseProfiles, timestamp);
+    }
+
+    private void updateTao(double sumPositive, double sumNegative, int groundSetCard) {
+        if (((SimpleFormula) formula.get(0)).isNegated()) {
+            sumPositive = sumPositive * groundSetCard + tao.getV() * retrospectiveCard;
+            sumNegative = sumNegative * groundSetCard + tao.getK() * retrospectiveCard;
+            retrospectiveCard += groundSetCard;
+            tao.setV(sumPositive / retrospectiveCard);
+            tao.setK(sumNegative / retrospectiveCard);
+        }
+        else {
+            sumPositive = sumPositive * groundSetCard + tao.getK() * retrospectiveCard;
+            sumNegative = sumNegative * groundSetCard + tao.getV() * retrospectiveCard;
+            retrospectiveCard += groundSetCard;
+            tao.setK(sumPositive / retrospectiveCard);
+            tao.setV(sumNegative / retrospectiveCard);
+        }
     }
 
     @Override
@@ -65,23 +80,6 @@ public class BinaryHolon implements Holon {
         timestamp = newTimestamp;
         updateTao(sumPositive, sumNegative, groundSetCard);
         return true;
-    }
-
-    private void updateTao(double sumPositive, double sumNegative, int groundSetCard) {
-        if (((SimpleFormula) formula.get(0)).isNegated()) {
-            sumPositive = sumPositive * groundSetCard + tao.getV() * retrospectiveCard;
-            sumNegative = sumNegative * groundSetCard + tao.getK() * retrospectiveCard;
-            retrospectiveCard += groundSetCard;
-            tao.setV(sumPositive / retrospectiveCard);
-            tao.setK(sumNegative / retrospectiveCard);
-        }
-        else {
-            sumPositive = sumPositive * groundSetCard + tao.getK() * retrospectiveCard;
-            sumNegative = sumNegative * groundSetCard + tao.getV() * retrospectiveCard;
-            retrospectiveCard += groundSetCard;
-            tao.setK(sumPositive / retrospectiveCard);
-            tao.setV(sumNegative / retrospectiveCard);
-        }
     }
 
     @Override

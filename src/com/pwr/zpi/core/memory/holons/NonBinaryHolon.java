@@ -9,8 +9,6 @@ import com.pwr.zpi.language.Grounder;
 import java.util.*;
 
 /**
- * ...
- *
  * @author Mateusz Gawlowski
  */
 

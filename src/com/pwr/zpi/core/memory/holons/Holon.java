@@ -6,9 +6,6 @@ import com.pwr.zpi.language.Formula;
 import java.util.*;
 
 /**
- * Interface for holons which represent summarizations of empirical episodic experiences gathered by agent.
- * Each holon describes different formula, so there are separate holons for every characteristics and every object.
- *
  * @author Mateusz Gawlowski
  */
 

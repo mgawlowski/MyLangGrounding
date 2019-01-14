@@ -10,12 +10,7 @@ import com.pwr.zpi.language.SimpleFormula;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//todo - dokumentacja
-//todo - cykl życia
-
 /**
- * ...
- *
  * @author Mateusz Gawlowski
  */
 
@@ -36,30 +31,6 @@ public class HolonsManager {
             currTimestamp = timestamp;
             baseProfilesRepository = episodicMemory.getBaseProfiles(timestamp, BPCollection.MemoryType.WM);
         }
-    }
-
-    public void updateEveryHolon(int timestamp) {
-        updateRepository(timestamp);
-        for (Holon h : holons) {
-            updateHolon(h);
-        }
-    }
-
-    public Map<Formula, Double> getSummaries(Formula formula, int timestamp) {
-        updateRepository(timestamp);
-
-        Holon holon = getHolon(formula);
-        if (holon == null) {
-            holon = createHolon(formula);
-//            System.out.println("create: " + holon);
-            return holon.getSummaries();
-        }
-        if (!isHolonUpToDate(holon)) {
-//            System.out.println(">>>>>>updating");
-            updateHolon(holon);
-        }
-        System.out.println(">" + holon);
-        return holon.getSummaries();
     }
 
     private Holon createHolon(Formula formula) {
@@ -92,8 +63,30 @@ public class HolonsManager {
 
     private void updateHolon(Holon holon) {
         Set<BaseProfile> newBaseProfiles = baseProfilesRepository.stream().
-                filter(p -> p.getTimestamp() > holon.getTimestamp()).
+                filter(h -> h.getTimestamp() > holon.getTimestamp()).
                 collect(Collectors.toCollection(TreeSet::new));
         holon.update(newBaseProfiles, currTimestamp);
     }
+
+    public void updateEveryHolon(int timestamp) {
+        updateRepository(timestamp);
+        for (Holon h : holons) {
+            updateHolon(h);
+        }
+    }
+
+    public Map<Formula, Double> getSummaries(Formula formula, int timestamp) {
+        updateRepository(timestamp);
+
+        Holon holon = getHolon(formula);
+        if (holon == null) {
+            holon = createHolon(formula);
+            return holon.getSummaries();
+        }
+        if (!isHolonUpToDate(holon)) {
+            updateHolon(holon);
+        }
+        return holon.getSummaries();
+    }
+
 }
